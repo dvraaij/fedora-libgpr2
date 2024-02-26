@@ -1,0 +1,39 @@
+--- a/Makefile
++++ b/Makefile
+@@ -167,14 +167,14 @@
+ endif
+ 
+ # Gpr2 tools
+-build-tools: build-lib-static coverage-instrument
+-	${BUILDER} -XLIBRARY_TYPE=static -XXMLADA_BUILD=static \
++build-tools: coverage-instrument
++	${BUILDER} -XLIBRARY_TYPE=relocatable -XXMLADA_BUILD=relocatable \
+ 		${GPR2TOOLS}
+ 
+ # gprname is built separately: it requires libadalang
+-build-gprname: build-lib-static coverage-instrument
+-	${BUILDER} -XLIBRARY_TYPE=static -XXMLADA_BUILD=static \
+-	  -XLANGKIT_SUPPORT_BUILD=static ${GPR2NAME}
++build-gprname: coverage-instrument
++	${BUILDER} -XLIBRARY_TYPE=relocatable -XXMLADA_BUILD=relocatable \
++	  -XLANGKIT_SUPPORT_BUILD=relocatable ${GPR2NAME}
+ 
+ # Gnatcov instrumentation
+ coverage-instrument:
+@@ -218,12 +218,12 @@
+ 		${GPR2}
+ 
+ install-tools: uninstall-tools
+-	${INSTALLER} -XLIBRARY_TYPE=static -XXMLADA_BUILD=static \
+-		--build-name=static --mode=usage ${GPR2TOOLS}
++	${INSTALLER} -XLIBRARY_TYPE=relocatable -XXMLADA_BUILD=relocatable \
++		--build-name=relocatable --mode=usage ${GPR2TOOLS}
+ 
+ install-gprname: uninstall-gprname
+-	${INSTALLER} -XLIBRARY_TYPE=static -XXMLADA_BUILD=static \
+-	  -XLANGKIT_SUPPORT_BUILD=static --build-name=static \
++	${INSTALLER} -XLIBRARY_TYPE=relocatable -XXMLADA_BUILD=relocatable \
++	  -XLANGKIT_SUPPORT_BUILD=relocatable --build-name=relocatable \
+           --mode=usage ${GPR2NAME}
+ 
+ #########

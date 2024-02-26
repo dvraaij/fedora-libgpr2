@@ -1,0 +1,43 @@
+--- a/testsuite/tests/display-version/test.py
++++ b/testsuite/tests/display-version/test.py
+@@ -15,7 +15,7 @@
+             print(p.out)
+         else:
+             output = p.out
+-            if not output.startswith(toolname + ' Pro ') or \
++            if not output.startswith(toolname + ' Community ') or \
+                     'This is free software; see the source for copying' not in output \
+                     or re.search('.*Copyright \\(C\\) [0-9\\-]+, AdaCore.*',
+                                  output) is None:
+--- a/testsuite/tests/excluded_source_dirs/test.out
++++ b/testsuite/tests/excluded_source_dirs/test.out
+@@ -8,5 +8,5 @@
+ * excluded parent with visible subdir
+ /src1/src11/b.ads
+ * source search path reported by gprinspect
+-<...lib/gcc/(host)/(version)/adainclude>
+ /src1
++<...lib/gcc/(host)/(version)/adainclude>
+--- a/testsuite/tests/source-ali/test.yaml
++++ b/testsuite/tests/source-ali/test.yaml
+@@ -3,3 +3,5 @@
+ driver: build_and_run
+ project_file: source_ali
+ main: main
++control:
++- [XFAIL, "True", "Fedora-specific: Requires gpr.gpr, which cannot yet be installed along with libgpr2."]
+--- a/testsuite/tests/gnat_tool_prefix/test.yaml
++++ b/testsuite/tests/gnat_tool_prefix/test.yaml
+@@ -1,2 +1,4 @@
+ description: test GPR2.Project.GNAT_Tool_Prefix
+ driver: python_script
++control:
++- [XFAIL, "True", "Fedora-specific: Requires cross-compilers being installed."]
+--- a/testsuite/tests/check-mem/test.yaml
++++ b/testsuite/tests/check-mem/test.yaml
+@@ -4,3 +4,4 @@
+ control:
+ - [XFAIL, "env.valgrind", "too long when run from valgrind"]
+ - [SKIP, "env.gnatcov is not None", "produces file descriptor errors when run on instrumented code"]
++- [XFAIL, "True", "Fedora-specific: GNATmem not available on Fedora."]
+\ No newline at end of file
