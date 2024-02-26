@@ -41,6 +41,9 @@ BuildRequires:  python3-e3-testsuite
 # Build only on architectures where GPRbuild is available.
 ExclusiveArch:  %{GPRbuild_arches}
 
+# Cannot be installed with the "next" version of libgpr2.
+Conflicts:      libgpr2_next
+
 %global common_description_en \
 An Ada library for handling GNAT project files.
 
