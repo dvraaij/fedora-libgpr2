@@ -1,6 +1,6 @@
 --- a/gpr2.gpr
 +++ b/gpr2.gpr
-@@ -39,6 +39,7 @@
+@@ -30,6 +30,7 @@
     for Object_Dir use Build_Root & "/" & Build & "/obj-" & Library_Type;
     for Library_Dir use Build_Root & "/" & Build & "/lib-" & Library_Type;
     for Library_Kind use Library_Type;

@@ -9,15 +9,6 @@
                      'This is free software; see the source for copying' not in output \
                      or re.search('.*Copyright \\(C\\) [0-9\\-]+, AdaCore.*',
                                   output) is None:
---- a/testsuite/tests/excluded_source_dirs/test.out
-+++ b/testsuite/tests/excluded_source_dirs/test.out
-@@ -8,5 +8,5 @@
- * excluded parent with visible subdir
- /src1/src11/b.ads
- * source search path reported by gprinspect
--<...lib/gcc/(host)/(version)/adainclude>
- /src1
-+<...lib/gcc/(host)/(version)/adainclude>
 --- a/testsuite/tests/source-ali/test.yaml
 +++ b/testsuite/tests/source-ali/test.yaml
 @@ -3,3 +3,5 @@
@@ -35,9 +26,9 @@
 +- [XFAIL, "True", "Fedora-specific: Requires cross-compilers being installed."]
 --- a/testsuite/tests/check-mem/test.yaml
 +++ b/testsuite/tests/check-mem/test.yaml
-@@ -4,3 +4,4 @@
+@@ -3,3 +3,4 @@
+ timeout: 1500
  control:
- - [XFAIL, "env.valgrind", "too long when run from valgrind"]
  - [SKIP, "env.gnatcov is not None", "produces file descriptor errors when run on instrumented code"]
 +- [XFAIL, "True", "Fedora-specific: GNATmem not available on Fedora."]
 \ No newline at end of file

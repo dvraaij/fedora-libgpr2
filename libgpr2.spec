@@ -4,8 +4,8 @@
 # Upstream source information.
 %global upstream_owner         AdaCore
 %global upstream_name          gpr
-%global upstream_version       23.0.0
-%global upstream_release_date  20221103
+%global upstream_version       24.0.0
+%global upstream_release_date  20230920
 %global upstream_gittag        v%{upstream_version}
 
 Name:           libgpr2
@@ -13,7 +13,7 @@ Version:        %{upstream_version}
 Release:        1%{?dist}
 Summary:        The GNAT project manager library
 
-License:        Apache-2.0
+License:        Apache-2.0 WITH LLVM-Exception
 
 URL:            https://github.com/%{upstream_owner}/%{upstream_name}
 Source:         %{url}/archive/%{upstream_gittag}/%{upstream_name}-%{upstream_version}.tar.gz
@@ -29,7 +29,9 @@ BuildRequires:  gcc-gnat gprbuild make sed
 # A fedora-gnat-project-common that contains GPRbuild_flags is needed.
 BuildRequires:  fedora-gnat-project-common >= 3.17
 BuildRequires:  gprconfig-kb
-BuildRequires:  libadalang-devel
+BuildRequires:  gnatcoll-core-devel
+BuildRequires:  gnatcoll-gmp-devel
+BuildRequires:  gnatcoll-iconv-devel
 %if %{with check}
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
@@ -53,10 +55,11 @@ An Ada library for handling GNAT project files.
 Summary:        Development files for the GNAT project manager library
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       fedora-gnat-project-common
+Requires:       libgpr-devel
 Requires:       gnatcoll-core-devel
 Requires:       gnatcoll-gmp-devel
 Requires:       gnatcoll-iconv-devel
-Requires:       langkit-devel
+Requires:       xmlada-devel
 
 %description devel %{common_description_en}
 
@@ -90,11 +93,11 @@ tools superseed the tools provided in package gprbuild.
 # (using `t`, jump to end of script) or exit with a non-zero exit code if the
 # substitution failed (using `q1`, quit with exit code 1).
 sed --in-place \
-    --expression='21 { s,18.0w,%{upstream_version},         ; t; q1 }' \
-    --expression='24 { s,19940713,%{upstream_release_date}, ; t; q1 }' \
-    --expression='26 { s,"2016",Date (1 .. 4),              ; t; q1 }' \
-    --expression='31 { s,Gnatpro,GPL,                       ; t; q1 }' \
-    src/tools/gpr2-version.ads
+    --expression='11 { s,18.0w,%{upstream_version},         ; t; q1 }' \
+    --expression='14 { s,19940713,%{upstream_release_date}, ; t; q1 }' \
+    --expression='16 { s,"2016",Date (1 .. 4),              ; t; q1 }' \
+    --expression='21 { s,Gnatpro,GPL,                       ; t; q1 }' \
+    src/lib/gpr2-version.ads
 
 # Initialize some variables.
 make LIBGPR2_TYPES='relocatable' PYTHON='%{python3}' \
@@ -118,8 +121,8 @@ export VERSION=%{version}
 %global GPRbuild_flags_pie -cargs -fPIC -largs -pie -bargs -shared -gargs
 
 # Build the tools.
-%{make_build} GPRBUILD_OPTIONS='%{GPRbuild_flags} %{GPRbuild_flags_pie} -XGPR2_EDGE_TOOLS_PREFIX="gpr"' build-tools
-%{make_build} GPRBUILD_OPTIONS='%{GPRbuild_flags} %{GPRbuild_flags_pie} -XGPR2_EDGE_TOOLS_PREFIX="gpr"' build-gprname
+%{make_build} GPRBUILD_OPTIONS='%{GPRbuild_flags} %{GPRbuild_flags_pie} \
+              -XGPR2_EDGE_TOOLS_PREFIX="gpr"' build-tools
 
 
 #############
@@ -139,13 +142,7 @@ gprinstall --create-missing-dirs --no-manifest \
            --prefix=%{buildroot}%{_prefix} --mode=usage \
            -XVERSION=%{version} -XGPR2_BUILD=release -XGPR2_EDGE_TOOLS_PREFIX="gpr" \
            -XLIBRARY_TYPE=relocatable -XXMLADA_BUILD=relocatable \
-           -P gpr2-tools.gpr
-
-gprinstall --create-missing-dirs --no-manifest \
-           --prefix=%{buildroot}%{_prefix} --mode=usage \
-           -XVERSION=%{version} -XGPR2_BUILD=release -XGPR2_EDGE_TOOLS_PREFIX="gpr" \
-           -XLIBRARY_TYPE=relocatable -XXMLADA_BUILD=relocatable \
-           -P gpr2-name.gpr
+           -P tools/gpr2-tools.gpr
 
 # Fix up some things that GPRinstall does wrong.
 ln --symbolic --force %{name}.so.%{version} %{buildroot}%{_libdir}/%{name}.so
@@ -167,6 +164,8 @@ sed --regexp-extended --in-place \
 # 4: Replace the value of Library_Dir with Directories.Libdir.
 # 5: Replace the value of Library_ALI_Dir with a pathname based on
 #    Directories.Libdir.
+
+cat %{buildroot}%{_GNAT_project_dir}/gpr2.gpr
 
 
 ###########
@@ -239,7 +238,6 @@ mv %{buildroot}%{_bindir}/gpr2build \
 %{_bindir}/gprinspect
 %{_bindir}/gprinstall
 %{_bindir}/gprls
-%{_bindir}/gprname
 %{_bindir}/gprremote
 
 
@@ -248,5 +246,12 @@ mv %{buildroot}%{_bindir}/gpr2build \
 ###############
 
 %changelog
+* Sun Dec 03 2023 Dennis van Raaij <dvraaij@fedoraproject.org> - 24.0.0-1
+- Updated to v24.0.0.
+- Updated license: LLVM exception added to library package.
+- Removed the gprname tool; it's no longer available (commit 8c5980f).
+- Removed build dependency on 'libadalang-devel'.
+- Added new build dependency on GNATcoll (core, GMP and iconv).
+
 * Thu Mar 09 2023 Dennis van Raaij <dvraaij@fedoraproject.org> - 23.0.0-1
 - New package.
